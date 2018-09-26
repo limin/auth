@@ -1,0 +1,3 @@
+UV_THREADPOOL_SIZE=50
+
+DEBUG=* heroku local
