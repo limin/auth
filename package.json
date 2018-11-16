@@ -12,6 +12,7 @@
   },
   "license": "Apache 2.0",
   "scripts": {
+    "start": "node server.js",
     "test": "jest --verbose --runInBand",
     "jsdoc": "jsdoc -d docs index.js"
   },

@@ -1,7 +1,7 @@
 
 module.exports = {
   //server running port
-  port: 3000,
+  port: 3006,
 
   //cors' origin
   origin: "http(s)?:\/\/[localhost||limin.github.io](:[\d]+)?",
@@ -15,11 +15,11 @@ module.exports = {
   digest:'sha512',
 
   //winston logger
-  logPath:"/tmp/logs",
+  logPath:"./.logs",
   logLevel:"info",
 
   //pouch datastore's config https://pouchdb.com/api.html#create_database
-  dsName:"/tmp/auth",
+  dsName:"./.db",
   dsOptions:{},
   initDataPath:"./init.json",
 

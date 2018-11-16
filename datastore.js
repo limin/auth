@@ -65,14 +65,15 @@ class Datastore{
   }
   
   createJwt(credential){
+    const exp=Date.now()/1000+this.config.tokenTTL
     const claims={
       iss:'auth', 
       sub:credential._id,
-      exp:Date.now()/1000+this.config.tokenTTL
+      exp
     }  
     const key=keys[Math.floor(Math.random()*10)]
     const token = njwt.create(claims,key).compact()
-    return {key,token}
+    return {key,token,exp}
   }
   
 
@@ -145,14 +146,14 @@ class Datastore{
       return this.pbkdf2({password:password,salt:credential.salt}).then(({key})=>{
         debug('generated key=%s',key)
         if(credential.passhash===key){
-          const {token,key}=this.createJwt(credential)
+          const {token,key,exp}=this.createJwt(credential)
           debug('generated token=%s',token)
           this.db.put({
             type:JWT_TYPE,
             "_id":token,
             key
           })
-          return token    
+          return {token,exp}    
         }else{
           throw new Error(`mismatched password ${loginId} ${password}`,loginId,password)
         }

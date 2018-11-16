@@ -22,9 +22,10 @@ module.exports=function(datastore){
     if (!req.body) return res.sendStatus(400)  
     debug('post /authenticate params:%o',req.body)  
     const {loginId,password}=req.body
-    datastore.authenticate(loginId,password).then((token)=>{
+    datastore.authenticate(loginId,password).then(({token,exp})=>{
       if(token===null){return res.status(401).send({error: '401 Unauthorized'})}
-      return res.send({token})    
+      debug('post /authenticate return:%o',{token,exp})        
+      return res.send({token,exp})    
     }).catch(err=>{
       return res.status(401).send({error: '401 Unauthorized'})
     })

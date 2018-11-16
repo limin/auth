@@ -62,8 +62,9 @@ test("verify successfully",(done)=>{
   store.createCredential("user1","password1").then(credential1=>{
     expect(credential1._id).toEqual("user1")
     expect(credential1.passhash).not.toBeNull()
-    store.authenticate("user1","password1").then(token=>{
+    store.authenticate("user1","password1").then(({token,exp})=>{
       expect(token).not.toBeNull()
+      expect(exp).not.toBeNull()
       store.verify(token).then(loginId=>{
         expect(loginId).toEqual("user1")
         done()        

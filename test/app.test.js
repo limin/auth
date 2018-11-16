@@ -15,7 +15,7 @@ let datastore=null
 let app = null
 
 beforeEach(() => {
-    datastore=new Datastore({dsName:`/tmp/${uuidv4()}`})
+    datastore=new Datastore({dsName:`./db/${uuidv4()}`})
     app = require('../app')(datastore)    
 })
 afterEach(() => {
@@ -81,7 +81,7 @@ describe(`post ${config.apiEndpoint}/authenticate`, ()=>{
 describe(`get ${config.apiEndpoint}/token/:token`, ()=>{
     test('with valid input',(done)=>{
         datastore.createCredential("user1","password1").then(credential=>{
-            datastore.authenticate ("user1","password1").then(token=>{
+            datastore.authenticate ("user1","password1").then(({token})=>{
                 request(app)
                 .get(`${config.apiEndpoint}/token/${token}`)
                 .set('Accept', 'application/json')
