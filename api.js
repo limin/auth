@@ -35,6 +35,7 @@ module.exports=function(datastore){
     const token=req.params.token
     debug('get /token/%s',token)  
     datastore.verify(token).then(loginId=>{
+      debug('get /token/%s return:%o',token,{loginId})              
       return res.send({loginId})
     }).catch(err=>{
       return res.status(404).send({error: '404 Not Found'})
