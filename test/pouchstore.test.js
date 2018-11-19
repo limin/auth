@@ -7,11 +7,14 @@
  * 
  */
 
-const Datastore= require('../datastore')
+const uuidv1 = require('uuid/v1')
+const update=require("immutability-helper")
+const Pouchstore= require('../pouchstore')
+const config= update(require('../auth.config'),{pouchdb:{path:{$set:`.db-${uuidv1()}`}}})
 
 let store=null
 
-beforeEach(() => store=new Datastore())
+beforeEach(() => store=new Pouchstore(config))
 afterEach(() => store.destroy())
 
 test("create credential",(done)=>{

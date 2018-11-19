@@ -30,4 +30,4 @@ server.on('listening', () => {
     let addr = server.address()
     logger.info(`Listening on port ${addr.family}/(${addr.address}):${addr.port}`)
 })
-server.listen(config.port || 3000)
+server.listen(config.httpServer.port || 3000)

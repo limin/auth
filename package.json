@@ -13,7 +13,7 @@
   "license": "Apache 2.0",
   "scripts": {
     "start": "node server.js",
-    "test": "jest --verbose --runInBand",
+    "test": "DEBUG=api jest --verbose --runInBand",
     "jsdoc": "jsdoc -d docs index.js"
   },
   "homepage": "https://github.com/limin/auth",
@@ -27,6 +27,8 @@
     "cors": "^2.8.3",
     "debug": "^3.1.0",
     "express": "^4.15.2",
+    "immutability-helper": "^2.8.1",
+    "mongodb": "^3.1.10",
     "njwt": "^0.4.0",
     "pouchdb": "^7.0.0",
     "pouchdb-find": "^7.0.0",

@@ -17,8 +17,8 @@ module.exports=function(datastore){
   const api=require('./api')(datastore)  
   app.use(express.static('public'))
   app.use(cors({
-    origin: new RegExp(config.origin)
+    origin: new RegExp(config.httpServer.origin)
   }))  
-  app.use(config.apiEndpoint, api)
+  app.use(config.httpServer.apiEndpoint, api)
   return app 
 }

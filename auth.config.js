@@ -1,28 +1,37 @@
 
 module.exports = {
-  //server running port
-  port: 3006,
+  httpServer:{
+    port: 3000,
+    origin: "http(s)?:\/\/[localhost||limin.herokuapp.com||limin.github.io](:[\d]+)?",
+    //restful api end point
+    apiEndpoint:"/api",
+  },
+  // Password-Based Key Derivation Function 2
+  pbkdf2:{
+    iterations: 1000,
+    keylen: 24,
+    digest: "sha512"
+  },
+  token:{
+      //10 hours in seconds
+      ttl: 36000
+  },
 
-  //cors' origin
-  origin: "http(s)?:\/\/[localhost||limin.github.io](:[\d]+)?",
+  logger:{
+    path:".",
+    level:"info"
+  },   
 
-  //token time to live 1 hour
-  tokenTTL: 3600,
+  db:"pouchdb",
 
-  //Password-Based Key Derivation Function 2 (PBKDF2)
-  iterations:1000,
-  keylen:24,
-  digest:'sha512',
+  pouchdb:{
+      path:".db",
+      options:{},
+      initDataPath:"./init.json"
+  },
 
-  //winston logger
-  logPath:"./.logs",
-  logLevel:"info",
+  mongodb:{
+      url:"mongodb://localhost:27017"
+  },
 
-  //pouch datastore's config https://pouchdb.com/api.html#create_database
-  dsName:"./.db",
-  dsOptions:{},
-  initDataPath:"./init.json",
-
-  //restful api end point
-  apiEndpoint:"/api"
 }

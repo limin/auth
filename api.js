@@ -7,7 +7,7 @@
  * 
  */
 
-const debug = require('debug')('api')
+const debug = require('debug')('auth:api')
 const express = require('express')
 const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json()
@@ -19,13 +19,16 @@ module.exports=function(datastore){
   })
     
   router.post('/authenticate',jsonParser, (req, res) => {
+    debug('post /authenticate params:%o',req.body)      
     if (!req.body) return res.sendStatus(400)  
-    debug('post /authenticate params:%o',req.body)  
     const {loginId,password}=req.body
     datastore.authenticate(loginId,password).then(({token,exp})=>{
-      if(token===null){return res.status(401).send({error: '401 Unauthorized'})}
-      debug('post /authenticate return:%o',{token,exp})        
-      return res.send({token,exp})    
+      if(token){
+        debug('post /authenticate return:%o',{token,exp})        
+        return res.send({token,exp})    
+      }else{
+        return res.status(401).send({error: '401 Unauthorized'})
+      }
     }).catch(err=>{
       return res.status(401).send({error: '401 Unauthorized'})
     })

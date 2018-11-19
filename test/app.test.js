@@ -7,25 +7,26 @@
  * 
  */
 
-const Datastore= require('../datastore')
 const request = require('supertest')
-const uuidv4 = require('uuid/v4')
-const config =require('../auth.config')
+const uuidv1 = require('uuid/v1')
+const update=require("immutability-helper")
+const Pouchstore= require('../pouchstore')
+const config= require('../auth.config')
 let datastore=null
 let app = null
 
 beforeEach(() => {
-    datastore=new Datastore({dsName:`./db/${uuidv4()}`})
+    datastore=new Pouchstore(update(config,{pouchdb:{path:{$set:`.db-${uuidv1()}`}}}))
     app = require('../app')(datastore)    
 })
 afterEach(() => {
     datastore.destroy()
 })
 
-describe(`post ${config.apiEndpoint}/credential`, ()=>{
+describe(`post ${config.httpServer.apiEndpoint}/credential`, ()=>{
     test('with valid input',(done)=>{
         request(app)
-        .post(`${config.apiEndpoint}/credential`)
+        .post(`${config.httpServer.apiEndpoint}/credential`)
         .send({loginId: 'user1',password:'password1'})
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)    
@@ -40,11 +41,11 @@ describe(`post ${config.apiEndpoint}/credential`, ()=>{
     })    
 })
 
-describe(`put ${config.apiEndpoint}/credential`, ()=>{
+describe(`put ${config.httpServer.apiEndpoint}/credential`, ()=>{
     test('with valid input',(done)=>{
         datastore.createCredential("user1","password1").then(credential=>{
             request(app)
-            .put(`${config.apiEndpoint}/credential`)
+            .put(`${config.httpServer.apiEndpoint}/credential`)
             .send({loginId: credential._id,password:'password2'})
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)    
@@ -60,11 +61,11 @@ describe(`put ${config.apiEndpoint}/credential`, ()=>{
     })    
 })
 
-describe(`post ${config.apiEndpoint}/authenticate`, ()=>{
+describe(`post ${config.httpServer.apiEndpoint}/authenticate`, ()=>{
     test('with valid input',(done)=>{
         datastore.createCredential("user1","password1").then(credential=>{
             request(app)
-            .post(`${config.apiEndpoint}/authenticate`)
+            .post(`${config.httpServer.apiEndpoint}/authenticate`)
             .send({loginId: credential._id,password:'password1'})
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)    
@@ -78,12 +79,12 @@ describe(`post ${config.apiEndpoint}/authenticate`, ()=>{
     })    
 })
 
-describe(`get ${config.apiEndpoint}/token/:token`, ()=>{
+describe(`get ${config.httpServer.apiEndpoint}/token/:token`, ()=>{
     test('with valid input',(done)=>{
         datastore.createCredential("user1","password1").then(credential=>{
             datastore.authenticate ("user1","password1").then(({token})=>{
                 request(app)
-                .get(`${config.apiEndpoint}/token/${token}`)
+                .get(`${config.httpServer.apiEndpoint}/token/${token}`)
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)    
                 .expect(200)            
