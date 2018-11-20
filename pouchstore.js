@@ -12,11 +12,9 @@ const PouchFind = require('pouchdb-find')
 PouchDB.plugin(PouchFind)
 const Datastore=require('./datastore')
 const Security=require('./security')
-const CREDENTIAL_TYPE='credential'
-const JWT_TYPE='jwt'
 
 class Pouchstore extends Datastore{
-  constructor(config){
+  constructor(config,db){
     super()
     this.config=Object.assign({},config)    
     this.db = new PouchDB(this.config.pouchdb.path,this.config.pouchdb.options)
@@ -46,7 +44,7 @@ class Pouchstore extends Datastore{
       const credential={
         "_id":loginId,
         loginId,
-        type:CREDENTIAL_TYPE,
+        type:Datastore.credentialType,
         passhash,
         salt
       }
@@ -102,13 +100,15 @@ class Pouchstore extends Datastore{
         if(credential.passhash===key){
           const {token,key,exp}=this.security.createJwt({sub:credential.loginId})
           debug('generated token=%s',token)
-          this.db.put({
-            type:JWT_TYPE,
+          return this.db.put({
+            type:Datastore.jwtType,
             "_id":token,
             token,
-            key
+            key,
+            exp
+          }).then(result=>{
+            return {token,exp}    
           })
-          return {token,exp}    
         }else{
           throw new Error(`mismatched password ${loginId} ${password}`,loginId,password)
         }

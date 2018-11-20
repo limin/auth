@@ -7,7 +7,8 @@
  * 
  */
 class Datastore{  
-
+  static get credentialType() {return 'credential'}
+  static get jwtType() {return 'jwt'}
   /**
    * 
    * Create credential
