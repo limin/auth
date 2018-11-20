@@ -70,10 +70,9 @@ class Mongostore extends Datastore{
         }).then(({key:passhash,salt})=>{
           credential.passhash=passhash
           credential.salt=salt
-          col.update({"_id" : loginId},credential).then((result)=>{
-            debug('Updated credential:%o',credential)            
-            resolve(credential)
-          },reason=>{throw reason}).catch((err)=>console.log(err))      
+          col.updateOne({"_id" : loginId},{$set:{passhash,salt}})          
+          debug('Updated credential:%o',credential)            
+          resolve(credential)
         })
       },reason=>{
         throw new Error(reason)
