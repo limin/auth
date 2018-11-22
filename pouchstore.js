@@ -23,7 +23,14 @@ class Pouchstore extends Datastore{
     })
 
     if(this.config.pouchdb.initDataPath){
-      this.db.bulkDocs(require(this.config.pouchdb.initDataPath))      
+      const data=require(this.config.pouchdb.initDataPath)
+      for(let type in data){
+        const docs=data[type].map(v=>{
+          v.type=type
+          return v
+        })
+        this.db.bulkDocs(docs)
+      }
     }
     this.security=new Security(config)
   }

@@ -1,7 +1,7 @@
 
 module.exports = {
   httpServer:{
-    port: 3000,
+    port: 3006,
     origin: "http(s)?:\/\/[localhost||limin.herokuapp.com||limin.github.io](:[\d]+)?",
     //restful api end point
     apiEndpoint:"/api",
@@ -13,8 +13,8 @@ module.exports = {
     digest: "sha512"
   },
   token:{
-      //10 hours in seconds
-      ttl: 36000
+    //10 hours in seconds
+    ttl: 36000
   },
 
   logger:{
@@ -22,16 +22,16 @@ module.exports = {
     level:"info"
   },   
 
-  db:"pouchdb",
+  db:"mongodb",
 
   pouchdb:{
-      path:".db",
-      options:{},
-      initDataPath:"./init.json"
+    path:".db",
+    options:{},
+    initDataPath:"./init.json"
   },
 
   mongodb:{
-      url:"mongodb://localhost:27017"
-  },
+    url:"mongodb://localhost:27017" 
+  }
 
 }

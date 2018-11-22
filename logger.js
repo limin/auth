@@ -8,17 +8,18 @@
  */
 
 const winston = require('winston')
+const config=require('./auth.config')
 const logger = winston.createLogger({
     format: winston.format.combine(
         winston.format.splat(),
         winston.format.json()
       ),    
     transports: [
-        new winston.transports.File({ filename: `${process.env.LOG_PATH||'.'}/error.log`, level: 'error' }),        
-        new winston.transports.File({ filename: `${process.env.LOG_PATH||'.'}/combined.log` })
+        new winston.transports.File({ filename: `${config.logger.path||'.'}/error.log`, level: 'error' }),        
+        new winston.transports.File({ filename: `${config.logger.path||'.'}/combined.log`, level:config.logger.level||'info'})
     ]
   });
-logger.level = process.env.LOG_LEVEL || 'info'
+logger.level = config.logger.level||'info'
 
 if (process.env.NODE_ENV !== 'production') {
     logger.add(new winston.transports.Console({

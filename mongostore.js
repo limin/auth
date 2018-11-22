@@ -7,10 +7,6 @@
  * 
  */
 const debug = require('debug')('auth:mongostore')
-const {ObjectId} = require('mongodb')
-const PouchDB = require('pouchdb/lib')
-const PouchFind = require('pouchdb-find')
-PouchDB.plugin(PouchFind)
 const Datastore=require('./datastore')
 const Security=require('./security')
 
@@ -70,12 +66,11 @@ class Mongostore extends Datastore{
         }).then(({key:passhash,salt})=>{
           credential.passhash=passhash
           credential.salt=salt
-          col.updateOne({"_id" : loginId},{$set:{passhash,salt}})          
-          debug('Updated credential:%o',credential)            
-          resolve(credential)
+          col.updateOne({"_id" : loginId},{$set:{passhash,salt}}).then(r=>{
+            debug('Updated credential:%o',credential)            
+            resolve(credential)  
+          })         
         })
-      },reason=>{
-        throw new Error(reason)
       })
     })
   }

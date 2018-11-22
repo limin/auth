@@ -103,7 +103,7 @@ describe("Test mongostore",()=>{
     debug('connecting to mongodb: %s',uri)      
     client=await MongoClient.connect(uri,{ useNewUrlParser: true })
     debug('connected to mongodb: %s',uri)  
-    store=new Mongostore(config,client.db(`test-lmppd-${uuidv1()}`))
+    store=new Mongostore(config,client.db(`test-auth-${uuidv1()}`))
     done()
   })
 

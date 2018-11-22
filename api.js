@@ -18,9 +18,9 @@ module.exports=function(datastore){
     return res.send(require('./help'))
   })
     
-  router.post('/authenticate',jsonParser, (req, res) => {
-    debug('post /authenticate params:%o',req.body)      
+  router.post('/authenticate',jsonParser, (req, res) => {    
     if (!req.body) return res.sendStatus(400)  
+    debug('post /authenticate params:%o',req.body)      
     const {loginId,password}=req.body
     datastore.authenticate(loginId,password).then(({token,exp})=>{
       if(token){

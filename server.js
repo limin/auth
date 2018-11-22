@@ -33,11 +33,13 @@ function createServer(datastore){
         logger.info(`Listening on port ${addr.family}/(${addr.address}):${addr.port}`)
     })
     server.listen(config.httpServer.port || 3000)
+    return server
 }
 
-let mongoClient=null
+let mongoClient=null, server=null
 
 function exitHandler(options, exitCode) {
+    if(server) server.close()
     if(mongoClient) mongoClient.close()
     if (options.exit) process.exit();
 }
@@ -57,14 +59,15 @@ process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 
 switch(config.db){
     case 'pouchdb':
-        createServer(new require('./pouchstore')(config))    
+        server=createServer(new require('./pouchstore')(config))    
         break
     case 'mongodb':
         const MongoClient = require('mongodb').MongoClient      
-        MongoClient.connect(config.mongodb.url).then(client=>{
+        MongoClient.connect(config.mongodb.url,{ useNewUrlParser: true }).then(client=>{
             mongoClient=client
             logger.info(`Connected successfully to mongodb server: ${config.mongodb.url}`)
-            createServer(new require('./mongostore')(config,db))    
+            const Mongostore=require('./mongostore')
+            server=createServer(new Mongostore(config,mongoClient.db('auth')))    
         },err=>{
             logger.error(err)
         })
