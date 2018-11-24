@@ -1,32 +1,31 @@
 /**
  * @file
  * 
- * @copyright 2018 {@link https://limin.github.io Min Li}
- * 
- * @license Licensed under {@link https://www.apache.org/licenses/LICENSE-2.0.html Apache License 2.0}
+ * @copyright 2018 Min Li
  * 
  */
 
-const winston = require('winston')
+const { createLogger, transports,format } = require('winston')
+const { splat,simple,combine, timestamp, prettyPrint } = format
 const config=require('./auth.config')
-const logger = winston.createLogger({
-    format: winston.format.combine(
-        winston.format.splat(),
-        winston.format.json()
-      ),    
+const fmt=combine(
+  splat(),
+  simple(),
+  timestamp(),
+  prettyPrint()
+)
+const logger = createLogger({
+    format:fmt,    
     transports: [
-        new winston.transports.File({ filename: `${config.logger.path||'.'}/error.log`, level: 'error' }),        
-        new winston.transports.File({ filename: `${config.logger.path||'.'}/combined.log`, level:config.logger.level||'info'})
+        new transports.File({ filename: `${config.logger.path||'.'}/error.log`, level: 'error' }),        
+        new transports.File({ filename: `${config.logger.path||'.'}/combined.log`, level:config.logger.level||'info'})
     ]
   });
 logger.level = config.logger.level||'info'
 
 if (process.env.NODE_ENV !== 'production') {
-    logger.add(new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.splat(),
-        winston.format.simple()
-      )
+    logger.add(new transports.Console({
+      format:fmt
     }))
 }
 
